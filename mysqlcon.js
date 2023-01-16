@@ -16,34 +16,13 @@ const mysqlConfig = {
   },
 };
 
-const mysqlEnv = mysqlConfig[env];
+let mysqlEnv = mysqlConfig[env];
 mysqlEnv.waitForConnections = true;
 mysqlEnv.connectionLimit = 20;
 
 const pool = mysql.createPool(mysqlEnv, { multipleStatements });
 
-async function execute(sql, params) {
-  // check array
-  if (typeof params === 'object' && params[0]) {
-    params = params.map((param) => String(param));
-  }
-
-  // check number
-  if (typeof params === 'number') {
-    params = String(params);
-  }
-
-  // check string
-  if (typeof params === 'string') {
-    params = [params];
-  }
-
-  const [results] = await pool.execute(sql, params);
-  return results;
-}
-
 module.exports = {
   mysql,
   pool,
-  execute,
 };
